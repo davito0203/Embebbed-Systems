@@ -1,0 +1,19 @@
+\BOOKMARK [1][-]{section.1}{Comunicaci\363n con el exterior}{}
+\BOOKMARK [1][-]{section.2}{Instalaci\363n Herramientas}{}
+\BOOKMARK [2][-]{subsection.2.1}{Instalaci\363n de algunas librer\355as}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Instalaci\363n de compiladores}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Compilando la imagen del Kernel de Linux}{subsection.2.2}
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Modificaci\363n de la variable PATH}{subsection.2.2}
+\BOOKMARK [2][-]{subsection.2.3}{Prueba de funcionamiento}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Descarga de Lua}{subsection.2.3}
+\BOOKMARK [2][-]{subsection.2.4}{Crear las particiones necesarias en la SD, formatear la memoria SD y grabar el bootloader y el sistema de archivos}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Desmontar la partici\363n y ejecutar push0 g 0 GpopfdiskGrayWhitepush0 g 0 Gpoptowidthheightdepthheightwidthwidthheight}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Crear una partici\363n de 200MB}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.3}{Crear la segunda partici\363n en el espacio sobrante en la SD}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.4}{Cambiar el tipo de la partici\363n 1 a OnTrack DM6 \(53\)}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.5}{Cambiar el tipo de la partici\363n 2 a Linux \(83\)}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.6}{Formatear la segunda partici\363n como ext3}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.7}{Almacenar el boot-loader y la im\341gen del kernel a la SD}{subsection.2.4}
+\BOOKMARK [3][-]{subsubsection.2.4.8}{Grabar el sistema de archivos a la segunda partici\363n}{subsection.2.4}
+\BOOKMARK [1][-]{section.3}{Creaci\363n de la imagen de Linux}{}
+\BOOKMARK [2][-]{subsection.3.1}{Pasar la imagen del Kernel a la SD}{section.3}

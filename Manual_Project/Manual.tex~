@@ -1,0 +1,452 @@
+\documentclass[12pt]{article}
+\textheight=23cm
+\textwidth=17cm
+\topmargin=-1cm
+\oddsidemargin=0cm
+\usepackage[activeacute,spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{times}
+\usepackage{amssymb,amsfonts}
+\usepackage[tbtags]{amsmath}
+\usepackage{cite}
+\usepackage[all]{xy}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{multicol}
+\usepackage{cite}
+\usepackage{url}
+\usepackage[tbtags]{amsmath}
+\usepackage{amsmath,amssymb,amsfonts,amsbsy}
+\usepackage{bm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[all]{xy}
+\usepackage{authblk}
+\usepackage[centerlast, small]{caption}
+\usepackage[colorlinks=true, citecolor=blue, linkcolor=blue, urlcolor=blue, breaklinks=true]{hyperref}
+\hyphenation{ele-men-tos he-rra-mi-en-ta cons-tru-yen trans-fe-ren-ci-a pro-pu-es-tas si-mu-lar vi-sua-li-za-cion}
+
+\begin{document}
+\title{\huge Manual para la instalación de herramientas}
+
+\author[1]{Martinez Hernandez. David Ricardo}
+\author[2]{Tobasura Madero. David Leonardo}
+\author[3]{Urbano Vallejo. Oscar Andres}
+\affil[1]{\href{}{drmartinezhe@unal.edu.co}}
+\affil[2]{\href{}{dltobasuram@unal.edu.co}}
+\affil[3]{\href{}{oaurbanov@unal.edu.co}}
+
+\date{}
+\maketitle
+
+\section{Comunicación con el exterior}
+\noindent
+La tarjeta posee múltiples pines de comunicación. Los que se han de usar para la programación y la interfaz con el usuario son:
+\begin{itemize}
+ \item USB $DP$ ($+$) y $DM$ ($-$): para realizar carga de programas pequeños a la memoria interna del procesador y probar el funcionamiento de la tarjeta.
+ \item Serial Port $R_{x}$ y $T_{x}$: Para la interacción entre el usuario y la tarjeta usando Minicom.
+\end{itemize}
+\noindent
+Para la comunicación usando los terminales USB, se usa un cable USB a miniUSB, al cual se le recorta el extremo del terminal miniUSB; a los $4$ cables ($+5\ V$, $GND$, $DP$, $DM$), se les adapta una regleta hembra tal que se puedan conectar de a pares a la regleta macho de la tarjeta ($+5V$ y $GND$ juntos, y $DP$ y $DM$ juntos). Los terminales $+5\ V$ y $GND$ energizan toda la tarjeta.\\
+Para la comunicación serial se requiere un $IC$ que sirva de interfaz entre el protocolo USB y serial, pero usando niveles lógicos de $0\ V$ y $3.3\ V$ que son los que usa el procesador. Esta característica en el mercado se conoce como "USB to serial - TTL compatible". En el mercado se consigue un pequeño PCB que tiene montado el conector USB, el $IC\ PL2303hx$, y $5$ pines de salida, que son $R_x$, $T_x$, $GND$, $+5\ V$, $+3.3\ V$. Para comunicar la tarjeta con esta interfaz se usa un cable ribbon de $5$ hilos, y en ambos extremos se le adapta regletas hembra para poderse conectar a los pines $T_x$ $R_x$ del $PL2303hx$, y a los pines $R_x$ y $T_x$ de la tarjeta.
+
+\section{Instalación Herramientas}
+\noindent
+\subsection{Instalación de algunas librerías}
+\noindent
+Ejecutar en la consola lo siguiente\\
+\textcolor{red}{sudo apt-get install libftdipp1 libftdi1 urjtag sed wget cvs subversion git-core coreutils unzip texi2html texinfo libsdl1.2-dev docbook-utils gawk python-pysqlite2 diffstat help2man make gcc build-essential g++ desktop-file-utils chrpath flex libncurses5 libncurses5-dev libxml-simple-perl zlib1g-dev pkg-config gettext libxml-simple-perl guile-1.8 cmake gmpc-dev build-essential libmpc-dev zlib1g-dev libncurses5-dev m4 uboot-envtools uboot-mkimage tree minicom gedit-dev gedit-common gedit-plugins gedit-latex-plugin gedit unrar libftdipp1 libftdi1 qucs kicad textlive-full kile okular}
+
+\subsection{Instalación de compiladores}
+\noindent
+Para poder instalar las herramientas del sistema embebido es necesario descomprimir el archivo \textit{\textcolor{blue}{buildroot.tar.bz2}} el cual contiene las herramientas necesarias para desarrollar adecuadamente el proyecto.\\
+Para descomprimir dicho archivo se debe ejecutar lo siguiente en la terminal:
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{tar -xvjf buildroot.tar.bz2}} 
+\end{center}
+\noindent
+Se accede a dicho directorio con el comando \fcolorbox{Gray}{White}{\textcolor{red}{cd buildroot}}
+Para instalar las herramientas que se encuentran en ese archivo se utiliza el siguiente comando:
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{make}} o \fcolorbox{Gray}{White}{\textcolor{red}{make -j6}}
+\end{center}
+\noindent
+El comando \textcolor{red}{-jn} es para crear \textbf{n} flujos de compilación dependiendo de la cantidad de procesadores que contenga su computador.\\
+Este comando permite descargar algunas herramientas del toolchain necesarias para la compilación y correcta ejecución de el sistema embebido
+
+\subsubsection{Compilando la imagen del Kernel de Linux}
+\noindent
+\begin{itemize}
+ \item linux-2.6.35.3.tar.bz2: Contiene todo el código fuente del núcleo Linux. Además, también contiene un programa con una interfaz gráfica basada en la librería curses (la misma usada para el programa buildroot) donde se encuentran múltiples opciones de configuración del kernel.
+ \item Imx-bootlets-src-10.05.02.tar.bz2: Son herrmientas para copiar la imagen de linux (creada en la carpeta anterior) a la SD, junto con un conjunto de configuraciones de registros internos del procesador i.MX, necesarios para que este pueda inicializar reguladores de tensión, memorias externas y buses de comunicación.
+\end{itemize}
+\noindent
+Estos archivos se deben descomprimir en el mismo directorio.
+
+\subsubsection{Modificación de la variable PATH}
+\noindent
+Un primer paso en modificar la variable de entorno PATH, para agregarle la ruta donde se encuentra el Cross\_Compilador que fue creado usando buildroot. Esto se realiza modificando el archivo .bashrc, se debe ejecutar lo siguiente en consola:
+
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{cd}} \\
+ \fcolorbox{Gray}{White}{\textcolor{red}{gedit .bashrc}}
+\end{center}
+\noindent
+Al final del archivo se añade la linea de comando\\
+\fcolorbox{Gray}{White}{\textcolor{red}{export PATH=\$PATH:/home/usuario/directorio/en/donde/se encuentra/buildroot/output/host/usr/bin/}}
+\noindent
+Esto modifica la variable PATH adicionando una nueva ruta de búsqueda de ejecutables. La ruta especificada es donde se encuentra el Cross-Compilador.
+
+\subsection{Prueba de funcionamiento}
+\noindent
+Es necesario descargar algunos paquetes adicionales los cuales se encuentran en \url{bitbucket.org/cicamargoba/mini-open/downloads}, en este enlace se encuentran los siguientes archivos
+\begin{table}[H]
+  \centering
+  \caption{.}
+    \begin{tabular}{|c|c|} \hline
+      chibios\_mini.tar.bz2 & Contiene las librerías necesarias para la compilación \\
+       & del procesador en tiempo real \\ \hline
+      ejemplo\_plataforma.mp4 & ejemplo de la plataforma en formato MP4 \\ \hline
+      linux-3.7.1.tar.bz2 & kernel de linux versión 3.7.1 \\ \hline
+      toolchain\_sam3.tgz & Toolchain para el procesador SAM3 \\ \hline
+      buildroot.tar.bz2 & Toolchain general para la compilación \\ \hline
+      Imx-bootlets-src-10.05.02.tar.bz2 & Genera el ejecutable que va en la SD \\ \hline
+      linux-2.6.35.3.tar.bz2 & kernel de linux versión 3.6.35.3 \\ \hline
+      material\_curso.tgz & Material del curso que se puede utilizar \\ \hline
+    \end{tabular}
+  \label{tab1}
+\end{table}
+\noindent
+
+\subsubsection{Descarga de Lua}
+\noindent
+En una terminal ejecute
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{wget http://www.lua.org/ftp/lua-5.2.2.tar.gz}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{tar zxvf lua-5.2.2.tar.gz}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{cd lua-5.2.2}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{make linux}}
+\end{center}
+\noindent
+Si genera algún problema por una libreria es necesario instalarla, de la siguiente forma
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{apt-cache search readline $\mid$ grep readline}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo apt-get install libreadline-dev}}
+\end{center}
+\noindent
+luego se vuelve a ejecutar el comando
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{make linux}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo make install}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo cp /usr/local/lib/liblua.a /usr/lib/}}
+\end{center}
+\noindent
+Lua es un lenguaje compacto, interpretado, ligero y sencillo, y es uno de los que soporta el i.MX.
+
+\subsection{Crear las particiones necesarias en la SD, formatear la memoria SD y grabar el bootloader y el sistema de archivos}
+\noindent
+Se necesitan dos particiones en la SD, la primera almacenará el boot-loader y la imágen del kernel; la segunda almacenará el sistema de archivos. Para los siguientes comandos se asume que la tarjeta es detectada como /dev/sdb (para conocer el dispositivo asignado a la tarjeta por Linux se debe insertar la tarjeta y ejecutar el comando \fcolorbox{Gray}{White}{\textcolor{red}{dmesg}})
+
+\subsubsection{Desmontar la partición y ejecutar \fcolorbox{Gray}{White}{\textcolor{red}{fdisk}}}
+\noindent
+Ejecutar en la consola lo siguiente
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo umount /dev/sdb*}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo fdisk /dev/sdb}}
+\end{center}
+\noindent
+Borrar las particiones existentes: Dentro de fdisk se debe escribir ``d'' (delete a partition)
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): d}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition number (1-4):}}
+\end{center}
+\noindent
+En el campo ``Partition number'' se debe escribir el número de la partición a ser eliminada, el proceso se debe repetir hasta borrar todas las particiones existentes.
+
+\subsubsection{Crear una partición de 200MB}
+\noindent
+Dentro de fdisk se debe escribir ``n'' (add a new partition) . Seleccionar partición primaria: Escribir ``p''
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): n}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition type:}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{p primary (0 primary, 0 extended, 4 free)}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{e extended}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Select (default p): p}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition number (1-4, default 1): 1}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{First sector (2048-15122431, default 2048):}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Last sector, +sectors or +size{K,M,G} (2048-15122431, default 15122431): +200M}}
+\end{center}
+
+\subsubsection{Crear la segunda partición en el espacio sobrante en la SD}
+\noindent
+Dentro de \fcolorbox{Gray}{White}{\textcolor{red}{fdisk}} se escribe
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): n}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition type:}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{p primary (0 primary, 0 extended, 4 free)}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{e extended}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Select (default p): p}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition number (1-4, default 1): 2}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{First sector (411648-15122431, default 15122431):}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Last sector, +sectors or +size{K,M,G} (411648-7626751, default 15122431):}}
+\end{center}
+
+\subsubsection{Cambiar el tipo de la partición 1 a OnTrack DM6 (53)}
+\noindent
+Dentro de \fcolorbox{Gray}{White}{\textcolor{red}{fdisk}} se escribe
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): t}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition number (1-4): 1}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Hex code (type L to list codes): 53}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Changed system type of partition 1 to 53 (OnTrack DM6 Aux3)}}
+\end{center}
+\noindent
+``53'' es el formato de partición que Freescale diseñó para el i.MX.
+
+\subsubsection{Cambiar el tipo de la partición 2 a Linux (83)}
+\noindent
+Dentro de \fcolorbox{Gray}{White}{\textcolor{red}{fdisk}} se escribe
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): t}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Partition number (1-4): 2}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Hex code (type L to list codes): 83}}
+\end{center}
+\noindent
+Al finalizar se debe tener la siguiente tabla de particiones, la cual se obtiene al ejecutar el comando ``p'' (print the partition table):\\
+\fcolorbox{Gray}{White}{\textcolor{red}{Device $\ \ \ \ \ $Boot $\ \ \ $ Start $\ \ \ \ \ \ \ $ End $\ \ \ \ \ \ \ \ $ Blocks $\ $ Id System}}\\
+\fcolorbox{Gray}{White}{\textcolor{red}{/dev/sdb1 2048 $\ \ \ $ 411647 $\ \ \ $ 204800 $\ \ \ $ 53 $\ \ \ \ \ \ \ \ $ OnTrack DM6 Aux3}}\\
+\fcolorbox{Gray}{White}{\textcolor{red}{/dev/sdb2 411648 15122431 7355392 $\ $ 83$\ \ \ \ \ \ \ \ \ $ Linux}}
+\noindent
+Una vez finalizada la creación de las particiones se deben guardar los cambios en la tabla de particiones de la SD, para esto debe ejecutar el comando ``w''
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{Command (m for help): w}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{The partition table has been altered!}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Calling ioctl() to re-read partition table.}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{Syncing disks.}}
+\end{center}
+
+\subsubsection{Formatear la segunda partición como ext3}
+\noindent
+Dentro de la consola se escribe lo siguiente.
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo mkfs.ext3 /dev/sdb2}}
+\end{center}
+
+\subsubsection{Almacenar el boot-loader y la imágen del kernel a la SD}
+\noindent
+El bootloader y la imágen se encuentran en la carpeta Factory\_Test/basic/files.
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo dd if=sd\_mmc\_bootstream.raw of=/dev/sdb1}}\\
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo umount /dev/sdb*}}
+\end{center}
+
+\subsubsection{Grabar el sistema de archivos a la segunda partición}
+\noindent
+El .tar.bz2 se encuentra en la carpeta files.
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo tar -jxvf buildroot\_fs.tar.bz2 -C /media/disk/}}
+\end{center}
+
+
+% Cargar la aplicación blink: (alimentar y conectar el cable USB a la
+% stamp): Para asegurarse que la tarjeta es reconocida al conectarla, se
+% ejecuta el comando  \textcolor{red}{lsusb}.
+% 
+% 
+% load\_blink
+% 
+% 
+% El LED D3 (esquina superior derecha) parpadeará, lo que indica que la
+% placa se encuentra bien soldada y está funcionando de forma adecuada .
+% 
+% 
+% Para programar los registros que permiten arrancar desde la SD debe
+% ejecutar el script
+% 
+% 
+% burn\_OTP
+% 
+% 
+% Y con esto ya puede arrancar con la SD que creó anteriormente.
+% 
+% 
+% Se conecta el dispositivo USB a serial, usando el cable ribbon, a los
+% pines Rx y Tx de la tarjeta, alimentandola también con los pines de
+% +5V y GND. Se abre una consola de Minicom donde abre las opciones de
+% configuración del puerto:
+% 
+% 
+%  sudo minicom -s
+% 
+% 
+% En la pestaña serial port setup se configura el puerto del dispositivo
+% a usar (en nuestro caso: /dev/ttyUSB0), se establece la rata de
+% baudios y los bits de paridad y de inicio como 115200 8N1. No se
+% habilita el flujo de control de hardware ni de software. Se guardan
+% los cambios y se entra en la consola del puerto. Apenas se energiza la
+% tarjeta, en la consola se muestran los comandos iniciales del boot del
+% procesador, y comienza la carga del sistema operativo. Cuando el
+% sistema termina de cargar, el SoC debe pedir el login: root, y el
+% password: root. Al llegar a este paso, todo el sistema cargó
+% correctamente y ya se puede empezar a hacer uso del OS cargado en la
+% tarjeta.
+% 
+% 
+% NOTA: El bootloader, el kernel y el sistema de archivos cargados hasta
+% ahora son todos imágenes precompiladas por el Ing. Camargo, que se
+% usan únicamente para probar el funcionamiento inicial de la tarjeta. A
+% continuación se describe cómo compilar desde ceros la imagen del
+% kernel y el sistema de archivos.
+% 
+% 
+% Compilando la imagen del Sistema de archivos
+% 
+% 
+% Parte del material del curso es el archivo comprimido
+% buildroot. Este contiene un programa llamado Buildroot. Es
+% una herramienta que simplifica y automatiza el proceso de creación de
+% un sistema Linux completo para un sistema embebido, usando la
+% compilación cruzada. Para construir el sistema Linux, Buildroot puede
+% generar un set de herramientas de cross-compilación, un sistema de
+% archivos raíz, una imágen del núcleo Linux y un gestor de arranque
+% (bootloader) para la mini-stamp.
+% 
+% 
+% Buildroot se puede usar para cualquiera de las tareas anteriormente
+% descritas, en cualquier combinación que se quiera. Soporta múltiples
+% procesadores y viene con múltiples configuraciones preformadas para
+% tarjetas específicas.
+% 
+% 
+% En el directorio raíz buildroot se encuentra un Makefile con
+% el cual se realizan todas las acciones necesarias a usar con
+% Buildroot. Al ejecutar:
+% 
+% 
+%  make menuconfig
+% 
+% 
+% Se abre una interfaz gráfica en donde se encuentran jerarquizadas
+% todas las opciones de configuración de Buildroot: se puede elegir que
+% clase de sistema de archivos crear, que versión de kernel, que
+% opciones de boot, que paquetes y aplicaciones se desean incluir en el
+% sistema de archivos, que herramientas de desarrollo se desean incluir,
+% etc. Por defecto ya viene un archivo de configuración cargado con las
+% opciones básicas para realizar aplicaciones sencillas con la
+% mini-stamp. Este archivo se llama .config y se encuentra en el
+% directorio raíz de Buildroot. Si se realizan cambios en la interfaz de
+% configuración, y se guardan los cambios, este archivo se modifica.
+% 
+% 
+% Por ahora, la configuración que viene por defecto es casi suficiente
+% para nuestro propósito por lo que solo es necesario modificar un par
+% de parámetros: en menú System Configuratio, se modifica el System
+% banner: "Welcome to buildroot: Sebastián y Jose", y el parámetro Port
+% to run a getty (logging prompt) on: "ttyAM0", que es el puerto serial
+% del SoC a través del cual se va a transmitir a Minicom la consola de
+% Buildroot.
+% 
+% 
+% Correr Buildroot con la configuración por defecto creará un sistema de
+% archivos básico y toda la cadena de herramientas del cross-compilador.
+% No creará un bootloader, ni una imágen del kernel Linux.
+% 
+% 
+% Para correr Buildroot, nos ubicamos en el directorio raíz de
+% buildroot, y se ejecuta  \textcolor{red}{make}. Comienza un proceso de descarga de
+% internet de todos los paquetes necesarios, que los va guardando como
+% comprimidos en la carpeta buildroot/dl. Luego empieza a
+% compilarlos usando el cross-compilador seleccionado para el i.MX. Este
+% es un proceso que puede tardar al rededor de 2 horas.
+% 
+% 
+% Al llegar a la compilación del paquete llamado openocd, muestra un
+% error por un Warning, y no permite continuar con la compilación. Este
+% error es debido a que en el Makefile de este paquete, los warnings
+% están definidos para que los tome como errores. Por esto, algunos
+% warnings que no afectan el funcionamiento del sistema son tomados como
+% errores. Para solucionarlo, nos dirigimos hasta donde se encuentra el
+% Makefile en ejecución, que se encuentra en la ruta:
+% buildroot/output/build/openocd-0.7.0/src/target, y se abre
+% el Makefile con gedit. Se busca el flag -Werror, que está escrito dos
+% veces en todo el archivo. Se borra y se guardan los cambios.
+% 
+% 
+% Nuevamente se regresa al directorio raíz de buildroot y se vuelve a
+% correr \textcolor{red}{make}. Esta vez la compilación continúa sin errores hasta que
+% acaba todas las tareas. El resultado final es que en el directorio
+% buildroot/output/images se encuentra la imágen del sistema
+% de archivos creada, comprimida. Teniendo esta imágen ya creada, se
+% descomprime en la segunda partición de la SD.
+% 
+% 
+
+% 
+
+\section{Creación de la imagen de Linux}
+\noindent 
+Dentro de la carpeta linux-2.6.35.3 hay un Makefile que será usado para compilar todo el núcleo Linux, usando el cross-compilador generado en la carpeta buildroot.\\
+Para editar las opciones de configuración del kernel, se abre la interfaz gráfica parecida a la existente en buildroot, la cual permite listar y seleccionar las múltiples configuraciones. Para esto se ejecuta en el directorio raíz de linux-2.6.35.3:
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{make ARCH=arm CROSS\_COMPILE=arm-linux- menuconfig}}
+\end{center}
+\noindent
+donde \fcolorbox{Gray}{White}{\textcolor{red}{ARCH=arm}} especifica que se va a compilar para la arquitectura ARM, y \fcolorbox{Gray}{White}{\textcolor{red}{CROSS\_COMPILE = arm-linux-}} especifica el cross-compilador que se va a usar. Finalmente, se especifica la directriz a ejecutar:
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{menuconfig}}
+\end{center}
+\noindent
+Al ejecutar este comando, se presenta un error de un enlace roto a un archivo. En la carpeta buildroot/output/host/usr/bin/ existen múltiples archivos que son enlaces a otros archivos ubicados en esa misma carpeta. El enlace roto se presenta en este archivo: \fcolorbox{Gray}{White}{\textcolor{red}{arm-linux-ld.real}}, que apunta a \fcolorbox{Gray}{White}{\textcolor{red}{arm-buildroot-linux-uclibcgnueabi-ld.real}}. Este problema se soluciona creando manualmente el enlace, así:
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{ln -s arm-buildroot-linux-uclibcgnueabi-ld.real arm-linux-ld.real}}
+\end{center}
+\noindent
+donde la opción ``-s'' crea un enlace simbólico entre ambos archivos.\\
+Al volver a ejecutar el comando \fcolorbox{Gray}{White}{\textcolor{red}{make ARCH=arm CROSS\_COMPILE=arm-linux- menuconfig}} se abre la ventana de la interfaz gráfica que muestra las opciones de configuración del kernel.\\
+Al ejecutar el siguiente comando en consola, se genera la imagen del kernel de linux
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{make ARCH=arm CROSS\_COMPILE=arm-linux-}}
+\end{center}
+\noindent
+La imagen final del Kernel Linux se crea en la carpeta \fcolorbox{Gray}{White}{\textcolor{red}{linux-2.6.35.3/arch/arm/boot}}, y tiene como nombre \fcolorbox{Gray}{White}{\textcolor{red}{zImage}}. Éste es el Sistema Operativo propiamente dicho, el cual se debe grabar en la primera partición de la SD, usando las herramientas ubicadas en la carpeta \fcolorbox{Gray}{White}{\textcolor{red}{Imx-bootlets-src-10.05.02}}.
+
+\subsection{Pasar la imagen del Kernel a la SD}
+\noindent
+La carpeta Imx-bootlets-src-10.05.02 con la configuración necesaria para el I.MX es proporcionada por Freescale, y contiene la configuración de boot del procesador, donde inicializa los buses de comunicación con las memorias, los reguladores internos de voltaje y registros de configuración.\\
+En el directorio raíz de la carpeta hay un Makefile, el cual se debe correr para pasar la imagen del Kernel a la tarjeta SD. Se debe asegurar que la tarjeta micro SD sea leída como "sdb", puesto que así está definida la ruta en el Makefile. Si se usa un adaptador microSD a USB, el sistema leerá la SD como un dispositivo de nombre "p", por lo que se debe modificar esta ruta a /dev/p1.\\
+Para correr el Makefile, se ejecuta el comando siguiente:
+
+
+\$ make ARCH=mx23 CROSS\_COMPILE=arm-linux-
+
+
+Este comando arroja error en la compilación pues no encuentra el comando "elftosb2", el cual es el programa encargado de convertir el formato de archivos elf (Executable \& Linkable File) al formato sb, que es el que reconoce el procesador.\\
+Este programa nos lo envió el Ing. Camargo. Es un archivo binario que se debe copiar en la carpeta /usr/bin, y se le deben cambiar los permisos de ejecución:
+
+
+\$ sudo chmod +x /usr/bin/elftosb2
+
+
+Así, al volver a correr el Makefile, este realiza todos los procesos sin errores, y la imágen del kernel ya queda pasada sin problemas a la SD.\\
+% Para comprobar que todo haya salido bien, se inserta la SD en la mini-stamp, se conecta su puerto serial a minicom y se energiza la tarjeta. Primero debe mostrar información de inicialización de todos los registros internos del IMX, y luego empear a cargar el sistema operativo. El mensaje final que aparece es "Welcome to Buildroo2", junto con una petición de login: user: root, password: qwerty. Al iniciar la sesión, ya podemos navegar entre las carpetas del sistema de archivos y asegurarnos que todas contengan los archivos y carpetas necesarias para el funcionamiento del sistema de archivos.
+% 
+% 
+% \\
+% Importante\\
+% apt-cache search readline $\mid$ grep readline\\
+% davito@davito ~/mini-open/lua-5.2.2 \\
+% \$ sudo cp elftosb2 /usr/bin/
+
+\bibliographystyle{ieeetran}
+\begin{thebibliography}{99}
+
+\bibitem{page1} Referenicas Librerias MIDI \url{http://www.faqs.org/docs/Linux-HOWTO/MIDI-HOWTO.html}
+
+\bibitem{page2} Referenicas Librerias MIDI \url{https://ccrma.stanford.edu/~craig/articles/linuxmidi/}
+
+\bibitem{page3} Referenicas Librerias MIDI \url{http://linux-sound.org/midi.html}
+
+\end{thebibliography}
+\end{document}\fcolorbox{Gray}{White}{\textcolor{red}{
