@@ -393,7 +393,8 @@ Para editar las opciones de configuración del kernel, se abre la interfaz gráf
  \fcolorbox{Gray}{White}{\textcolor{red}{make ARCH=arm CROSS\_COMPILE=arm-linux- menuconfig}}
 \end{center}
 \noindent
-donde \fcolorbox{Gray}{White}{\textcolor{red}{ARCH=arm}} especifica que se va a compilar para la arquitectura ARM, y \fcolorbox{Gray}{White}{\textcolor{red}{CROSS\_COMPILE = arm-linux-}} especifica el cross-compilador que se va a usar. Finalmente, se especifica la directriz a ejecutar:
+donde \fcolorbox{Gray}{White}{\textcolor{red}{ARCH=arm}} especifica que se va a compilar para la arquitectura ARM, y\\
+\fcolorbox{Gray}{White}{\textcolor{red}{CROSS\_COMPILE = arm-linux-}} especifica el cross-compilador que se va a usar. Finalmente, se especifica la directriz a ejecutar:
 \begin{center}
  \fcolorbox{Gray}{White}{\textcolor{red}{menuconfig}}
 \end{center}
@@ -417,19 +418,17 @@ La imagen final del Kernel Linux se crea en la carpeta \fcolorbox{Gray}{White}{\
 La carpeta Imx-bootlets-src-10.05.02 con la configuración necesaria para el I.MX es proporcionada por Freescale, y contiene la configuración de boot del procesador, donde inicializa los buses de comunicación con las memorias, los reguladores internos de voltaje y registros de configuración.\\
 En el directorio raíz de la carpeta hay un Makefile, el cual se debe correr para pasar la imagen del Kernel a la tarjeta SD. Se debe asegurar que la tarjeta micro SD sea leída como "sdb", puesto que así está definida la ruta en el Makefile. Si se usa un adaptador microSD a USB, el sistema leerá la SD como un dispositivo de nombre "p", por lo que se debe modificar esta ruta a /dev/p1.\\
 Para correr el Makefile, se ejecuta el comando siguiente:
-
-
-\$ make ARCH=mx23 CROSS\_COMPILE=arm-linux-
-
-
-Este comando arroja error en la compilación pues no encuentra el comando "elftosb2", el cual es el programa encargado de convertir el formato de archivos elf (Executable \& Linkable File) al formato sb, que es el que reconoce el procesador.\\
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{make ARCH=mx23 CROSS\_COMPILE=arm-linux-}}
+\end{center}
+\noindent
+Este comando arroja error en la compilación pues no encuentra el comando ``elftosb2'', el cual es el programa encargado de convertir el formato de archivos elf (Executable \& Linkable File) al formato sb, que es el que reconoce el procesador.\\
 Este programa nos lo envió el Ing. Camargo. Es un archivo binario que se debe copiar en la carpeta /usr/bin, y se le deben cambiar los permisos de ejecución:
-
-
-\$ sudo chmod +x /usr/bin/elftosb2
-
-
-Así, al volver a correr el Makefile, este realiza todos los procesos sin errores, y la imágen del kernel ya queda pasada sin problemas a la SD.\\
+\begin{center}
+ \fcolorbox{Gray}{White}{\textcolor{red}{sudo chmod +x /usr/bin/elftosb2}}
+\end{center}
+\noindent
+Así, al volver a correr el Makefile, este realiza todos los procesos sin errores, y la imágen del kernel ya queda pasada sin problemas a la SD.
 % Para comprobar que todo haya salido bien, se inserta la SD en la mini-stamp, se conecta su puerto serial a minicom y se energiza la tarjeta. Primero debe mostrar información de inicialización de todos los registros internos del IMX, y luego empear a cargar el sistema operativo. El mensaje final que aparece es "Welcome to Buildroo2", junto con una petición de login: user: root, password: qwerty. Al iniciar la sesión, ya podemos navegar entre las carpetas del sistema de archivos y asegurarnos que todas contengan los archivos y carpetas necesarias para el funcionamiento del sistema de archivos.
 % 
 % 

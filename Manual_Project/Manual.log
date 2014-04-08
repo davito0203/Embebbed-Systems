@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.3.30)  4 APR 2014 13:43
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.3.30)  8 APR 2014 14:52
 entering extended mode
  %&-line parsing enabled.
 **Manual.tex
@@ -1183,20 +1183,14 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\fboxrule' on input line 152.
 
-[3] [4] [5]
-Overfull \hbox (62.86633pt too wide) in paragraph at lines 395--397
-\OT1/ptm/m/n/12 donde [][][] es-pe-ci-fi-ca que se va a com-pi-lar pa-ra la ar-
-qui-tec-tu-ra ARM, y [][][]
- []
-
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 443--444
+[3] [4] [5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 444--445
 []\OT1/ptm/m/n/12 Referenicas Li-bre-rias MI-DI [][]$\OT1/pcr/m/n/12 http : / /
  www . faqs . org / docs / Linux-[]HOWTO /
  []
 
 
-Underfull \hbox (badness 1082) in paragraph at lines 445--446
+Underfull \hbox (badness 1082) in paragraph at lines 446--447
 []\OT1/ptm/m/n/12 Referenicas Li-bre-rias MI-DI [][]$\OT1/pcr/m/n/12 https : / 
 / ccrma . stanford . edu / []craig / articles /
  []
@@ -1205,7 +1199,7 @@ Underfull \hbox (badness 1082) in paragraph at lines 445--446
 Here is how much of TeX's memory you used:
  10078 strings out of 493848
  137685 string characters out of 1152823
- 265255 words of memory out of 3000000
+ 264255 words of memory out of 3000000
  13090 multiletter control sequences out of 15000+50000
  33573 words of font info for 90 fonts, out of 3000000 for 9000
  721 hyphenation exceptions out of 8191
@@ -1221,7 +1215,7 @@ y10.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/shar
 e/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/font
 s/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/ut
 mri8a.pfb>
-Output written on Manual.pdf (7 pages, 126507 bytes).
+Output written on Manual.pdf (7 pages, 126549 bytes).
 PDF statistics:
  169 PDF objects out of 1000 (max. 8388607)
  33 named destinations out of 1000 (max. 500000)
